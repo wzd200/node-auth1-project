@@ -13,7 +13,6 @@ function find() {
 function findBy(filter) {
   return db('users')
     .where(filter)
-    .orderBy('user_id')
 }
 
 /**
