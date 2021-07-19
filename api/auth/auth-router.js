@@ -6,14 +6,14 @@ const bcrypt = require('bcryptjs')
 
 const router = express.Router()
 
-router.get('/:id', async (req, res, next) => {
-  try {
-      const user = await User.findById(req.params.id)
-      res.json(user)
-    } catch (err) {
-      next(err)
-  }
-})
+// router.get('/:id', async (req, res, next) => {
+//   try {
+//       const user = await User.findById(req.params.id)
+//       res.json(user)
+//     } catch (err) {
+//       next(err)
+//   }
+// })
 
 router.post('/register', async (req, res, next) => {
   const { username, password } = req.body
@@ -35,7 +35,9 @@ router.post('/login', async (req, res, next) => {
 
   if (user && bcrypt.compareSync(password, user.password)) {
     req.session.user = user
-    res.json(user) 
+    res.json({
+      message: `Welcome ${user}`
+    }) 
   } else {
     res.status(401).json({
       message: 'invalid credentials'
