@@ -19,7 +19,10 @@ const router = express.Router()
 //   }
 // })
 
-router.post('/register', checkPasswordLength, checkUsernameFree, async (req, res, next) => {
+router.post('/register', 
+  checkPasswordLength, 
+  checkUsernameFree, 
+  async (req, res, next) => {
   const { username, password } = req.body
   const hash = bcrypt.hashSync(password, 8)
   const newUser = {
@@ -28,8 +31,7 @@ router.post('/register', checkPasswordLength, checkUsernameFree, async (req, res
   }
   const dbUser = await User.add(newUser)
   res.status(201).json({
-    message: `Welcome ${username.username}`,
-    user: dbUser
+    message: `Welcome ${dbUser.username}`
   })
 })
 
