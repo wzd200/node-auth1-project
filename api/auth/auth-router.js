@@ -29,26 +29,39 @@ router.post('/register',
     username: username,
     password: hash
   }
+
   const dbUser = await User.add(newUser)
-  res.status(201).json({
-    message: `Welcome ${dbUser.username}`
-  })
+  console.log(dbUser)
+  res.json(dbUser)
+  // User.add({ username, password: hash })
+  //   .then(saved => {
+  //     res.status(201).json(saved)
+  //   })
 })
 
-router.post('/login', checkUsernameExists, async (req, res, next) => {
-  const { username, password } = req.body
-  const user = await User.findBy({ username }).first()
-
-  if (user && bcrypt.compareSync(password, user.password)) {
-    req.session.user = user
-    res.json({
-      message: `Welcome ${user}`
-    }) 
+router.post('/login', 
+  checkUsernameExists, 
+  async (req, res, next) => {
+  const { password } = req.body
+  if (bcrypt.compareSync(password, req.user.password)) {
+    req.session.user = req.user
+    res.json({ message: `Welcome ${req.user.username}`})
   } else {
-    res.status(401).json({
-      message: 'invalid credentials'
-    })
+    next({ status: 401, message: 'Invalid credentials'})
   }
+  // const { username, password } = req.body
+  // const user = await User.findBy({ username }).first()
+
+  // if (user && bcrypt.compareSync(password, user.password)) {
+  //   req.session.user = user
+  //   res.json({
+  //     message: `Welcome ${user}`
+  //   }) 
+  // } else {
+  //   res.status(401).json({
+  //     message: 'invalid credentials'
+  //   })
+  // }
 })
 
 router.get('/logout', (req, res) => {
